@@ -14,9 +14,8 @@ export const sendMessage = async (req, res) => {
         const response = await openai.chat.completions.create({
             model: "gpt-4.1-nano-2025-04-14",
             messages: [
-                { role: "user", content: message },
                 { role: "system", content: "You are a helpful assistant." },
-
+                { role: "user", content: message },
             ],
         })
 
@@ -34,7 +33,7 @@ export const sendMessage = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error in send message route", error.message);
+        console.error("Error in send message route:", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }

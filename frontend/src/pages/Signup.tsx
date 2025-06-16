@@ -10,7 +10,7 @@ const Signup = () => {
 
     const navigate = useNavigate();
 
-    const { signup, isAuthenticating } = useAuthStore();
+    const { signup, isSigningUp } = useAuthStore();
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -83,8 +83,8 @@ const Signup = () => {
                             />
                             <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
-                        <Button type="submit" disabled={isAuthenticating} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
-                            {isAuthenticating ? (<Loader2 className="animate-spin" />) : (<span>Create Account</span>)}
+                        <Button type="submit" disabled={isSigningUp} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
+                            {isSigningUp ? (<Loader2 className="animate-spin" />) : (<span>Create Account</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">
                             Already have an account?{" "}

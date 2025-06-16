@@ -4,10 +4,12 @@ import toast from 'react-hot-toast'
 
 export const useAuthStore = create((set) => ({
     authUser: null,
-    isAuthenticating: null,
+    isCheckingAuth: false,
+    isLoggingIn: false,
+    isSigningUp: false,
 
     checkAuth: async () => {
-        set({ isAuthenticating: true });
+        set({ isCheckingAuth: true });
         try {
             const res = await axiosInstance.get('/auth/check');
             set({ authUser: res.data });
@@ -15,12 +17,12 @@ export const useAuthStore = create((set) => ({
             console.log("Error in checkAuth:", error);
             set({ authUser: null });
         } finally {
-            set({ isAuthenticating: false });
+            set({ isCheckingAuth: false });
         }
     },
 
     signup: async (formData, navigate) => {
-        set({ isAuthenticating: true });
+        set({ isSigningUp: true });
         try {
             const response = await axiosInstance.post('/auth/signup', formData);
             if (response.status === 201) {
@@ -32,12 +34,12 @@ export const useAuthStore = create((set) => ({
             console.error('Signup error:', error);
             toast.error(error.response?.data?.message || 'An error occcurred during signup');
         } finally {
-            set({ isAuthenticating: false });
+            set({ isSigningUp: false });
         }
     },
 
     login: async (formData, navigate) => {
-        set({ isAuthenticating: true });
+        set({ isLoggingIn: true });
         try {
             const response = await axiosInstance.post('/auth/login', formData);
             if (response.status === 201) { 
@@ -49,7 +51,7 @@ export const useAuthStore = create((set) => ({
             console.error('Login error:', error);
             toast.error(error.response?.data?.message || 'An error occcurred during login');
         } finally {
-            set({ isAuthenticating: false });
+            set({ isLoggingIn: false });
         }
     },
 

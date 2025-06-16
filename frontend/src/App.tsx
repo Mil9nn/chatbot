@@ -5,8 +5,19 @@ import Home from "./pages/Home"
 import MainLayout from "./layout/MainLayout"
 import Profile from "./pages/Profile"
 import { Toaster } from "react-hot-toast"
+import { useEffect } from "react"
+import { useAuthStore } from "./store/useAuthStore"
 
 const App = () => {
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const authUser = useAuthStore((state) => state.authUser);
+  
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log(authUser);
+
   return (
     <div>
       <Routes>
