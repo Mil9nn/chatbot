@@ -1,33 +1,64 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Mail, User, UserCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Loader, Loader2, Lock, Mail, UserCircle } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
+
+    const navigate = useNavigate();
+
+    const { signup, isAuthenticating } = useAuthStore();
+
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: ''
+    })
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+        signup(formData, navigate);
+    }
+
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-zinc-900 via-black to-zinc-950 text-white">
             {/* Left Section - Signup Form */}
             <div className="flex flex-1 items-center bg-white justify-end">
                 <div className="w-full max-w-md h-[438px] bg-black lg:rounded-l-xl shadow-xl p-8">
                     <h2 className="text-4xl font-bold mb-6 text-center text-white">Sign Up</h2>
-                    <form className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div className="relative flex flex-col gap-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                            type="text"
-                            name="name"
-                            id="name"
-                            placeholder="John Doe"
-                            className="bg-zinc-900 pl-8 text-white placeholder:text-zinc-400"
-                            required
-                        />
-                        <UserCircle className="absolute left-2 top-7.5 opacity-15 size-5" />
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                                onChange={handleChange}
+                                value={formData.fullName}
+                                type="text"
+                                name="fullName"
+                                id="name"
+                                placeholder="John Doe"
+                                className="bg-zinc-900 pl-8 text-white placeholder:text-zinc-400"
+                                required
+                            />
+                            <UserCircle className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
 
                         <div className="relative flex flex-col gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
+                                onChange={handleChange}
+                                value={formData.email}
                                 type="email"
                                 name="email"
                                 id="email"
@@ -35,12 +66,14 @@ const Signup = () => {
                                 className="bg-zinc-900 pl-8 text-white placeholder:text-zinc-400"
                                 required
                             />
-                            <Mail className="absolute left-2 top-7.5 opacity-15 size-5"  />
+                            <Mail className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
 
                         <div className="relative flex flex-col gap-2">
                             <Label htmlFor="password">Password</Label>
                             <Input
+                                onChange={handleChange}
+                                value={formData.password}
                                 type="password"
                                 name="password"
                                 id="password"
@@ -48,10 +81,10 @@ const Signup = () => {
                                 className="bg-zinc-900 pl-8 text-white placeholder:text-zinc-400"
                                 required
                             />
-                            <Lock className="absolute left-2 top-7.5 opacity-15 size-5"  />
+                            <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
-                        <Button type="submit" className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
-                            Create Account
+                        <Button type="submit" disabled={isAuthenticating} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
+                            {isAuthenticating ? (<Loader2 className="animate-spin" />) : (<span>Create Account</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">
                             Already have an account?{" "}

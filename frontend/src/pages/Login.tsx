@@ -1,20 +1,46 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Mail, UserCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Loader2, Lock, Mail } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
+
+    const { login, isAuthenticating } = useAuthStore();
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    })
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+        login(formData, navigate);
+    }
+
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-zinc-900 via-black to-zinc-950 text-white">
             {/* Left Section - Login Form */}
             <div className="flex flex-1 items-center bg-white justify-end">
                 <div className="w-full max-w-md h-[438px] bg-black lg:rounded-l-xl shadow-xl p-8">
                     <h2 className="text-4xl font-bold mb-6 text-center text-white">LogIn</h2>
-                    <form className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div className="relative flex flex-col gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
+                                onChange={handleChange}
                                 type="email"
                                 name="email"
                                 id="email"
@@ -28,6 +54,7 @@ const Login = () => {
                         <div className="relative flex flex-col gap-2">
                             <Label htmlFor="password">Password</Label>
                             <Input
+                                onChange={handleChange}
                                 type="password"
                                 name="password"
                                 id="password"
@@ -37,8 +64,8 @@ const Login = () => {
                             />
                             <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
-                        <Button type="submit" className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
-                            Login
+                        <Button type="submit" disabled={isAuthenticating} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
+                            {isAuthenticating ? (<Loader2 className="animate-spin" />) : (<span>Login</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">
                             Dont have an account?{" "}
