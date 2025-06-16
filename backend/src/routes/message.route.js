@@ -1,11 +1,12 @@
 import express from 'express'
 import OpenAI from "openai";
-import { getMessages } from '../controllers/message.controller.js';
+import { getAllMessages, sendMessage } from '../controllers/message.controller.js';
 const client = new OpenAI();
 
 const router = express.Router();
 
 // User sends a message and a bot responds (openai)
-router.post('/send', getMessages);
+router.post('/send', sendMessage);
+router.get('/all/:userId', getAllMessages);
 
 export default router;
