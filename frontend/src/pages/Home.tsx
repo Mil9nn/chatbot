@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMessageStore } from "@/store/useMessageStore";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { SendHorizonal } from "lucide-react";
+import { RefreshCcw, SendHorizonal } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { socket } from "@/lib/socket";
 
@@ -12,16 +12,32 @@ import remarkGfm from "remark-gfm";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useThemeStore } from "@/store/useThemeStore";
 
+import { useVoiceInput } from "@/store/useVoiceInput";
+import { MicOff, Mic } from "lucide-react";
+import VoiceOverlay from "@/components/VoiceOverlay";
+
+type Message = {
+  _id: string;
+  userId: string;
+  content: string;
+  role: "user" | "bot";
+  createdAt: string;
+};
+
 const Home = () => {
-  const { isSending, fetchAllMessages, sendMessage, messages, isLoading } = useMessageStore();
+  const { isSending, fetchAllMessages, sendMessage, messages, isLoading, deleteAllMessages } = useMessageStore();
   const { authUser } = useAuthStore();
   const [inputMessage, setInputMessage] = useState("");
-  const messageEndRef = useRef(null);
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
 
   const { isLight } = useThemeStore();
 
+  const { startListening, isListening } = useVoiceInput((result) => {
+    setInputMessage(result);
+  });
+
   // Memoize the socket handlers to prevent multiple registrations
-  const handleReceiveMessage = useCallback((data) => {
+  const handleReceiveMessage = useCallback((data: Message) => {
     useMessageStore.getState().initSocketListeners(data);
   }, []);
 
@@ -52,10 +68,31 @@ const Home = () => {
     setInputMessage("");
   }, [inputMessage, authUser?._id, sendMessage]);
 
+  const handleChatReset = () => {
+    if (!authUser?._id) return;
+    deleteAllMessages(authUser._id);
+    setInputMessage("");
+  }
+
   if (!authUser) return <span className="text-white p-4">Loading...</span>;
 
   return (
     <div className="flex flex-col w-screen h-[calc(100vh-70px)]">
+      {/* Voice Input Overlay */}
+      <VoiceOverlay isListening={isListening} />
+
+      {/* Reset Chat History */}
+      {messages.length > 0 && (
+        <button
+          onClick={handleChatReset}
+          className="flex self-end cursor-pointer gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-sm text-white transition-all shadow-sm border border-zinc-700 hover:shadow-md active:scale-95"
+        >
+          <RefreshCcw className="w-4 h-4" />
+          <span>Reset Chat</span>
+        </button>
+      )}
+
+
       {/* Chat Messages */}
       {isLoading ? (<MessageSkeleton />) : (<ScrollArea className="h-full overflow-y-auto">
         <div className="flex-1 px-4 py-6 space-y-4">
@@ -84,13 +121,23 @@ const Home = () => {
                       children={msg.content}
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        code({ node, inline, className, children, ...props }) {
+                        code({ node, inline, className, children, ...props }: {
+                          node?: any;
+                          inline?: boolean;
+                          className?: string;
+                          children?: React.ReactNode;
+                          [key: string]: any;
+                        }) {
                           return !inline ? (
                             <pre className="bg-zinc-900 text-white p-3 rounded-lg overflow-auto text-sm">
-                              <code {...props}>{children}</code>
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
                             </pre>
                           ) : (
-                            <code className="bg-zinc-800 px-1 py-0.5 rounded">{children}</code>
+                            <code className={`bg-zinc-800 px-1 py-0.5 rounded ${className}`} {...props}>
+                              {children}
+                            </code>
                           );
                         },
                       }}
@@ -125,7 +172,7 @@ const Home = () => {
         <div className="flex items-center gap-2">
           <input
             type="text"
-            placeholder="Type your message..."
+            placeholder="Type your message... or speak"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -133,9 +180,16 @@ const Home = () => {
             className={`flex-1 p-3 rounded-xl border shadow-md ${isLight ? "bg-[whitesmoke] text-bg-zinc-800" : "bg-zinc-800 border-zinc-700 text-white"} outline-none`}
           />
           <button
+            onClick={startListening}
+            className="p-2 cursor-pointer hover:text-indigo-500 transition disabled:opacity-50"
+            title="Voice Input"
+          >
+            {isListening ? <MicOff className="text-red-500" /> : <Mic className="size-8" />}
+          </button>
+          <button
             onClick={handleSend}
             disabled={inputMessage.trim() === "" || isSending}
-            className="p-3 rounded-full bg-blue-600 hover:bg-blue-500 transition disabled:opacity-50"
+            className="p-3 cursor-pointer rounded-full bg-blue-600 hover:bg-blue-500 transition disabled:opacity-50"
           >
             <SendHorizonal className="text-white size-5" />
           </button>

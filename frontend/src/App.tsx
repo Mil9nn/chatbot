@@ -23,7 +23,7 @@ const App = () => {
   }, [checkAuth]);
 
   if(isCheckingAuth) {
-    return <div className={`${isLight ? "bg-white text-black" : "bg-zinc-950 text-white"} flex gap-1 items-center justify-center w-screen h-screen`}>
+    return <div className={`{isLight ? "bg-white text-black" : "bg-zinc-950 text-white"} flex gap-1 items-center justify-center w-screen h-screen`}>
       <span>Loading your account</span>
       <Loader className="animate-spin" />
     </div>

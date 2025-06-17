@@ -16,7 +16,7 @@ const Login = () => {
         password: ''
     })
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
@@ -24,7 +24,7 @@ const Login = () => {
         }));
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         login(formData, navigate);
     }

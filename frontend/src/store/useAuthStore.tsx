@@ -3,7 +3,28 @@ import { create } from 'zustand'
 import toast from 'react-hot-toast'
 import { socket } from '@/lib/socket'
 
-export const useAuthStore = create((set) => ({
+import type { User } from '@/types/types.ts'
+
+interface FormData {
+    email: string;
+    password: string;
+    username?: string;
+    confirmPassword?: string;
+    fullName?: string;
+}
+
+interface AuthStore {
+    authUser: User | null;
+    isCheckingAuth: boolean;
+    isLoggingIn: boolean;
+    isSigningUp: boolean;
+    checkAuth: () => Promise<void>;
+    signup: (formData: FormData, navigate: (path: string) => void) => Promise<void>;
+    login: (formData: FormData, navigate: (path: string) => void) => Promise<void>;
+    logout: (navigate: (path: string) => void) => Promise<void>; 
+}
+
+export const useAuthStore = create<AuthStore>((set) => ({
     authUser: null,
     isCheckingAuth: false,
     isLoggingIn: false,
@@ -33,7 +54,7 @@ export const useAuthStore = create((set) => ({
                 navigate('/');
                 toast.success('Signup succcessful!');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Signup error:', error);
             toast.error(error.response?.data?.message || 'An error occcurred during signup');
         } finally {
@@ -51,7 +72,7 @@ export const useAuthStore = create((set) => ({
                 navigate('/');
                 toast.success('Logged in succcessfuly!');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Login error:', error);
             toast.error(error.response?.data?.message || 'An error occcurred during login');
         } finally {
@@ -68,7 +89,7 @@ export const useAuthStore = create((set) => ({
                 toast.success("Logged out successfully");
                 navigate('/login');
             }
-        } catch (error) {
+        } catch (error: any) {
             toast.error(error.response.data.message);
         }
     },
