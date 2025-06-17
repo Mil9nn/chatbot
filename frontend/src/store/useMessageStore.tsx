@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/lib/axios';
 import { create } from 'zustand'
+import { socket } from '@/lib/socket';
 
 export const useMessageStore = create((set) => ({
     messages: [],
@@ -27,5 +28,16 @@ export const useMessageStore = create((set) => ({
         } finally {
             set({ isLoading: false });
         }
+    },
+
+    // Real time listener for incoming bot messages
+    initSocketListeners: (data) => {
+        set((state) => ({
+            messages: [...state.messages, {...data, role: "assistant"}]
+        }))
+    },
+
+    cleanupSocketListeners: () => {
+        socket.off("receive-messages");
     }
 }))

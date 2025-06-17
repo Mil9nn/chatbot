@@ -3,6 +3,10 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
+import http from 'http'
+import { Server } from 'socket.io'
+
+
 import authRoutes from './routes/auth.route.js'
 import messageRoutes from './routes/message.route.js'
 import { connectDB } from './lib/db.js'
@@ -10,11 +14,17 @@ import { connectDB } from './lib/db.js'
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const server = http.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
+})
 
 app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
+  origin: 'http://localhost:3000', // your frontend URL
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -23,10 +33,25 @@ app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Socket.io server running')
 })
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  console.log("A user connected:", socket.id);
+
+  socket.on('send-message', (data) => {
+    console.log('Message reveived:', data);
+    io.emit('receive-message', data);
+  });
+
+  socket.on('disconnect', (socket) => {
+    console.log('User disconnected:', socket.id);
+  })
+})
+
+const port = process.env.PORT;
+
+server.listen(port, () => {
   console.log(`Example app listening on port http://localhost:${port}`)
   connectDB();
 })
