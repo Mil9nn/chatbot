@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Loader, Loader2, Lock, Mail, UserCircle } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -26,9 +27,37 @@ const Signup = () => {
         }));
     }
 
+    const validateForm = () => {
+        const { fullName, email, password } = formData;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!/^[a-zA-Z\s\-']{3,30}$/.test(fullName.trim())) {
+            toast.error("Please enter a valid name");
+            return false;
+        }
+
+        if (!emailRegex.test(email)) {
+            toast.error("Please enter a valid email address");
+            return false;
+        }
+
+        if (password.length < 8) {
+            toast.error("Password must be at least 8 characters long.");
+            return false;
+        }
+
+        if (password.length > 64) {
+            toast.error("Password cannot be longer than 64 characters.");
+            return false;
+        }
+
+        return true;
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        if (!validateForm()) return;
         signup(formData, navigate);
     }
 
@@ -84,7 +113,7 @@ const Signup = () => {
                             <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
                         <Button type="submit" disabled={isSigningUp} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
-                            {isSigningUp ? (<Loader2 className="animate-spin" />) : (<span>Create Account</span>)}
+                            {isSigningUp ? (<Loader2 className="animate-spin" />) : (<span>Signup</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">
                             Already have an account?{" "}

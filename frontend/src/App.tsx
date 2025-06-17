@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
@@ -7,26 +7,37 @@ import Profile from "./pages/Profile"
 import { Toaster } from "react-hot-toast"
 import { useEffect } from "react"
 import { useAuthStore } from "./store/useAuthStore"
+import { Loader } from "lucide-react"
+import { useThemeStore } from "./store/useThemeStore"
 
 const App = () => {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const authUser = useAuthStore((state) => state.authUser);
+
+  const { isCheckingAuth } = useAuthStore();
+
+  const { isLight } = useThemeStore();
   
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(authUser);
+  if(isCheckingAuth) {
+    return <div className={`${isLight ? "bg-white text-black" : "bg-zinc-950 text-white"} flex gap-1 items-center justify-center w-screen h-screen`}>
+      <span>Loading your account</span>
+      <Loader className="animate-spin" />
+    </div>
+  }
 
   return (
-    <div>
+    <div className={`${isLight ? "" : "bg-zinc-950 text-white"}`}>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={!authUser ? <Navigate to="/login" /> : <Home />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={authUser ? <Navigate to="/" /> : <Signup />} />
+        <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
       </Routes>
 
       <Toaster
