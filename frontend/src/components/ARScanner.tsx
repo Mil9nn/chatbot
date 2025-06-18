@@ -11,12 +11,17 @@ function ARScanner() {
     const streamRef = useRef<MediaStream | null>(null);
 
     const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+    const [isFrontCamera, setIsFrontCamera] = useState(false);
+
 
     const { isLight } = useThemeStore();
 
-    const startCamera = async () => {
+    const startCamera = async (facingMode: 'user' | 'environment' = 'user') => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode },
+                audio: false,
+            });
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 streamRef.current = stream;
@@ -85,31 +90,38 @@ function ARScanner() {
                     className="w-full max-w-2xl aspect-video rounded-lg border border-zinc-800 shadow-md object-cover"
                 />
 
-                {/* Action Buttons */}
-                <div className="flex items-center sm:flex-nowrap flex-wrap justify-center gap-6 mt-2">
+                <div className="flex flex-wrap justify-center gap-4 mt-2">
                     <button
-                        onClick={startCamera}
-                        title="Start Camera"
-                        className={`flex items-center gap-1 cursor-pointer p-3 rounded-full border-1 ${isLight ? "border-black/60 hover:bg-[#e4e0e0]" : "border-white/30 hover:bg-zinc-700"} transition`}
+                        onClick={() => startCamera(isFrontCamera ? 'user' : 'environment')}
+                        className={`flex items-center gap-1 p-3 rounded-full border-1 ${isLight ? "border-black/60 hover:bg-[#e4e0e0]" : "border-white/30 hover:bg-zinc-700"} transition`}
                     >
-                        Camera
                         <Camera className="size-6" />
+                        Start Camera
                     </button>
                     <button
                         onClick={captureAndAnalyze}
-                        title="Analyze"
-                        className="flex w-[120px] items-center gap-1 cursor-pointer p-3 rounded-md bg-violet-600 hover:bg-violet-500 transition"
+                        className="flex w-[120px] items-center gap-1 p-3 rounded-md bg-violet-600 hover:bg-violet-500 transition"
                     >
                         {isAnalyzing ? <Loader2 className="animate-spin" /> : <ScanLine className="size-6" />}
                         {isAnalyzing ? <span>Analyzing</span> : <span>Analyze</span>}
                     </button>
                     <button
                         onClick={stopCamera}
-                        title="Stop Camera"
-                        className="flex items-center gap-1 border-1 border-white/30 hover:scale-[1.05] active:scale-[0.95] cursor-pointer p-3 rounded-full transition"
+                        className="flex items-center gap-1 border border-white/30 hover:scale-105 active:scale-95 p-3 rounded-full transition"
                     >
                         <X className="size-6" />
                         Cancel
+                    </button>
+                    <button
+                        onClick={() => {
+                            stopCamera();
+                            const newFacing = isFrontCamera ? 'environment' : 'user';
+                            setIsFrontCamera(!isFrontCamera);
+                            startCamera(newFacing);
+                        }}
+                        className="flex items-center gap-1 border border-white/30 hover:scale-105 active:scale-95 p-3 rounded-full transition"
+                    >
+                        Switch
                     </button>
                 </div>
 
