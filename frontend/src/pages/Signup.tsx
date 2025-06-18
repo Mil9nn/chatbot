@@ -112,7 +112,7 @@ const Signup = () => {
                             />
                             <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
-                        <Button type="submit" disabled={isSigningUp} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
+                        <Button type="submit" disabled={isSigningUp} className="mt-2 cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white">
                             {isSigningUp ? (<Loader2 className="animate-spin" />) : (<span>Signup</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">

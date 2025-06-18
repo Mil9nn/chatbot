@@ -2,7 +2,7 @@ const MessageSkeleton = () => {
   const skeletonMessages = Array(6).fill(null);
 
   return (
-    <div className="h-full p-4 bg-zinc-950">
+    <div className="h-full p-4">
       {skeletonMessages.map((_, idx) => {
         const isSender = idx % 2 !== 0;
 

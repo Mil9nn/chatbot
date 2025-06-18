@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMessageStore } from "@/store/useMessageStore";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { RefreshCcw, SendHorizonal } from "lucide-react";
+import { Loader, RefreshCcw, SendHorizonal } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { socket } from "@/lib/socket";
 
@@ -74,7 +74,9 @@ const Home = () => {
     setInputMessage("");
   }
 
-  if (!authUser) return <span className="text-white p-4">Loading...</span>;
+  if (!authUser) return <div className={`${isLight ? "text-black" : "text-white"} w-screen h-[calc(100vh-70px)] flex items-center justify-center`}>
+    <Loader className="animate-spin" />
+    </div>;
 
   return (
     <div className="flex flex-col w-screen h-[calc(100vh-70px)]">
@@ -94,7 +96,7 @@ const Home = () => {
 
 
       {/* Chat Messages */}
-      {isLoading ? (<MessageSkeleton />) : (<ScrollArea className="h-full overflow-y-auto">
+      {isLoading ? (<MessageSkeleton />) : (<ScrollArea className="h-full">
         <div className="flex-1 px-4 py-6 space-y-4">
           {messages.map((msg, idx) => {
             const isUser = msg.role === "user";

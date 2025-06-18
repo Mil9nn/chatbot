@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
     const navigate = useNavigate();
 
-    const { login, isSigningUp } = useAuthStore();
+    const { login, isLoggingIn } = useAuthStore();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -63,8 +63,8 @@ const Login = () => {
                             />
                             <Lock className="absolute left-2 top-7.5 opacity-15 size-5" />
                         </div>
-                        <Button type="submit" disabled={isSigningUp} className="mt-2 bg-zinc-700 hover:bg-zinc-600 text-white">
-                            {isSigningUp ? (<Loader2 className="animate-spin" />) : (<span>Login</span>)}
+                        <Button type="submit" disabled={isLoggingIn} className="mt-2 cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white">
+                            {isLoggingIn ? (<Loader2 className="animate-spin" />) : (<span>Login</span>)}
                         </Button>
                         <p className="text-sm text-zinc-300 text-center">
                             Dont have an account?{" "}
