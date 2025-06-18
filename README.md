@@ -2,6 +2,17 @@
 
 A modern AI-powered chat application with real-time messaging, voice input, and image analysis capabilities. NOTABOT presents itself as a friendly, human-like conversational partner powered by OpenAI's GPT models.
 
+## 📸 Screenshots
+
+### Login Interface
+![Login Screen](frontend/public/screenshots/login.png)
+
+### Main Chat Interface
+![Main Layout](frontend/public/screenshots/mainlayout.png)
+
+### Image Analysis Feature
+![Image Analysis](frontend/public/screenshots/imageAnalysis.png)
+
 ## ✨ Features
 
 - **Real-time Chat**: Instant messaging with WebSocket support
@@ -179,6 +190,11 @@ notabot/
 │   │   ├── store/
 │   │   ├── lib/
 │   │   └── types/
+│   ├── public/
+│   │   └── screenshots/
+│   │       ├── login.png
+│   │       ├── mainlayout.png
+│   │       └── imageAnalysis.png
 │   ├── package.json
 │   └── .env
 └── README.md
