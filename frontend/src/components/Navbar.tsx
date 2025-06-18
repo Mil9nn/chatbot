@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Moon, Sun, Circle } from "lucide-react";
+import { LogOut, Moon, Sun, Circle, Image } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "./ui/button";
 import { useThemeStore } from "@/store/useThemeStore";
@@ -15,11 +15,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold tracking-tight hover:text-zinc-300 transition-colors">
-          ChatBot
+          NOTABOT
         </Link>
 
         {/* Nav Links */}
         <nav className="flex items-center gap-6 text-sm font-medium">
+
+          <Link className="flex items-center gap-1 border-1 border-white/30 p-2 rounded-sm hover:scale-[1.02] transition" to="/analyze-image"><Image className="size-5" />Scan Image </Link>
           
           {/* Theme Toggle */}
           <div onClick={toggleTheme} className={`cursor-pointer relative flex justify-between border-2 ${isLight ? "border-black" : "border-white/70"} rounded-full w-14`}>

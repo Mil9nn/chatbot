@@ -50,23 +50,12 @@ export const useMessageStore = create<MessageStore>((set) => ({
     },
 
     fetchAllMessages: async (userId) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true });
         try {
             const response = await axiosInstance.get(`/messages/all/${userId}`);
-
-            if (!response.data.success) {
-                throw new Error(response.data.message || 'Failed to load messages');
-            }
-
-            set({
-                messages: response.data.data || []
-            });
-
+            set({ messages: response.data });
         } catch (error) {
-            set({
-                error: error instanceof Error ? error.message : 'Failed to load messages',
-                messages: []
-            });
+            console.log("Error fetching messages:", error);
         } finally {
             set({ isLoading: false });
         }

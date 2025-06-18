@@ -5,9 +5,18 @@ import { io } from '../index.js'
 
 export const sendMessage = async (req, res) => {
     const { message, userId } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid userId format'
+        });
+    }
+
     try {
+        const objectUserId = new mongoose.Types.ObjectId(userId);
+
         const userMessage = await Message.create({
-            userId: userId,
+            userId: objectUserId,
             role: "user",
             content: message,
         });
@@ -90,9 +99,53 @@ export const deleteAllMessages = async (req, res) => {
     try {
         const objectUserId = new mongoose.Types.ObjectId(userId);
         await Message.deleteMany({ userId: objectUserId });
-        res.status(200).json({ message: 'All messages deleted successfully'});
+        res.status(200).json({ message: 'All messages deleted successfully' });
     } catch (error) {
         console.error('Error in deleteAllMessages:', error.message);
         res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 }
+
+export const analyzeImage = async (req, res) => {
+  try {
+    const { image } = req.body;
+
+    if (!image || typeof image !== 'string') {
+      return res.status(400).json({ success: false, message: 'Image is required as base64 string' });
+    }
+
+    // Call OpenAI GPT-4 Vision
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4.1-nano-2025-04-14',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Please analyze this image:' },
+            {
+              type: 'image_url',
+              image_url: {
+                url: image, // This must be a `data:image/jpeg;base64,...` string
+              },
+            },
+          ],
+        },
+      ],
+      max_tokens: 1000,
+    });
+
+    const message = completion.choices?.[0]?.message?.content || 'No response received';
+
+    res.status(200).json({
+      success: true,
+      message,
+    });
+  } catch (error) {
+    console.error('OpenAI Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to analyze image',
+      error: error?.message || 'Unknown error',
+    });
+  }
+};

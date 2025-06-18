@@ -9,6 +9,7 @@ import { useEffect } from "react"
 import { useAuthStore } from "./store/useAuthStore"
 import { Loader } from "lucide-react"
 import { useThemeStore } from "./store/useThemeStore"
+import AnalyzeImage from "./pages/AnalyzeImage"
 
 const App = () => {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -35,6 +36,7 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={!authUser ? <Navigate to="/login" /> : <Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/analyze-image" element={<AnalyzeImage />} />
         </Route>
         <Route path="/signup" element={authUser ? <Navigate to="/" /> : <Signup />} />
         <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
