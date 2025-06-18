@@ -14,6 +14,8 @@ import { connectDB } from './lib/db.js'
 
 dotenv.config();
 
+const __dirname = path.resolve();
+
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
