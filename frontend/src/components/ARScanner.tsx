@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { axiosInstance } from '@/lib/axios';
-import { Camera, Loader2, ScanLine, X, XCircle } from 'lucide-react';
+import { Camera, Loader2, ScanLine, X } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
+import { useThemeStore } from '@/store/useThemeStore';
 
 function ARScanner() {
     const [image, setImage] = useState<string | null>(null);
@@ -10,6 +11,8 @@ function ARScanner() {
     const streamRef = useRef<MediaStream | null>(null);
 
     const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+
+    const { isLight } = useThemeStore();
 
     const startCamera = async () => {
         try {
@@ -64,8 +67,8 @@ function ARScanner() {
     };
 
     return (
-        <ScrollArea className="w-full h-full">
-            <div className="w-full h-[calc(100vh-70px)] flex flex-col items-center justify-start gap-4 p-4 bg-zinc-900 rounded-xl shadow-lg border border-zinc-800">
+        <ScrollArea className="w-full h-[calc(100vh-70px)] pb-10">
+            <div className={`flex flex-col items-center justify-center gap-4 p-4 ${isLight ? 'bg-white text-black' : 'bg-zinc-900 text-white'}`}>
 
                 {/* Intro Description */}
                 <div className="w-full max-w-2xl text-center text-sm text-zinc-400 px-2">
@@ -87,7 +90,7 @@ function ARScanner() {
                     <button
                         onClick={startCamera}
                         title="Start Camera"
-                        className="flex items-center gap-1 cursor-pointer p-3 rounded-full border-1 border-white/30 hover:bg-zinc-700 transition"
+                        className={`flex items-center gap-1 cursor-pointer p-3 rounded-full border-1 ${isLight ? "border-black/60 hover:bg-[#e4e0e0]" : "border-white/30 hover:bg-zinc-700"} transition`}
                     >
                         Camera
                         <Camera className="size-6" />
@@ -108,6 +111,14 @@ function ARScanner() {
                         <X className="size-6" />
                         Cancel
                     </button>
+                </div>
+
+                <div>
+                    {image && (
+                        <div className="mt-4 p-2 rounded-sm border border-zinc-700 bg-zinc-800 max-w-2xl">
+                            <img src={image} alt="Captured" className="w-full h-auto rounded-sm" />
+                        </div>
+                    )}
                 </div>
 
                 {/* Response Section */}
