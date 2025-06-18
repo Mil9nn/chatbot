@@ -86,7 +86,7 @@ function ARScanner() {
                 />
 
                 {/* Action Buttons */}
-                <div className="flex items-center justify-center gap-6 mt-2">
+                <div className="flex items-center sm:flex-nowrap flex-wrap justify-center gap-6 mt-2">
                     <button
                         onClick={startCamera}
                         title="Start Camera"
