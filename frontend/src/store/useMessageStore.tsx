@@ -23,6 +23,8 @@ interface MessageStore {
     isSending: boolean;
     isLoading: boolean;
     error: string | null;
+    inputMessage: string,
+    setInputMessage: (message: string) => void;
 
     sendMessage: (params: SendMessageParams) => Promise<void>;
     fetchAllMessages: (userId: string) => Promise<void>;
@@ -36,6 +38,9 @@ export const useMessageStore = create<MessageStore>((set) => ({
     isSending: false,
     isLoading: false,
     error: null,
+
+    inputMessage: '',
+    setInputMessage: (message) => set({ inputMessage: message }),
 
     sendMessage: async (messageData) => {
         set({ isSending: true, error: null });
