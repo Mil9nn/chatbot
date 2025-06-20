@@ -17,48 +17,76 @@ const Navbar = () => {
     if (!authUser?._id) return;
     deleteAllMessages(authUser._id);
     setInputMessage("");
-  }
+  };
 
   return (
-    <header className={`${isLight ? "bg-[whitesmoke] text-zinc-900" : "bg-gradient-to-r from-zinc-900 via-black to-zinc-950 text-white"} min-h-[70px] px-6 py-4 shadow-md`}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-bold tracking-tight hover:text-zinc-300 transition-colors">
-          NOTABOT
-        </Link>
-
-        {/* Nav Links */}
-        <nav className="flex items-center gap-3 text-sm font-medium">
-
-          {/* Reset Chat History */}
+    <header
+      className={`${
+        isLight
+          ? "bg-[whitesmoke] text-zinc-900"
+          : "bg-gradient-to-r from-zinc-900 via-black to-zinc-950 text-white"
+      } min-h-[70px] px-6 py-4 shadow-md`}
+    >
+      <div className="max-w-7xl mx-auto flex sm:items-center justify-between gap-3 sm:flex-row flex-col">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            to="/"
+            className="flex items-center gap-1 text-2xl font-bold tracking-tight hover:text-zinc-300 transition-colors"
+          >
+            <img src="/bot.jpg" alt="logo" className="w-8 h-8 rounded-full" />
+            NOTABOT
+          </Link>
           {messages.length > 0 && (
-            <Button variant={isLight ? "outline" : "default"} title="Reset chat history" className="cursor-pointer" onClick={handleChatReset}>
+            <Button
+              variant={isLight ? "outline" : "default"}
+              title="Reset chat history"
+              className="cursor-pointer rounded-none"
+              onClick={handleChatReset}
+            >
               <RefreshCcw className="w-4 h-4" />
+              Reset Chat
             </Button>
           )}
+        </div>
 
-          <Button variant={isLight ? "outline" : "default"}>
-            <Link className="flex items-center gap-1" to="/analyze-image">
-              <Image className="size-5" />
-              <span className="hidden sm:inline">Scan Image</span>
-            </Link>
-          </Button>
-
+        {/* Nav Links */}
+        <nav className="flex items-center self-end gap-5 text-sm font-medium">
           {/* Theme Toggle */}
-          <div onClick={toggleTheme} className={`cursor-pointer relative flex justify-between border-2 ${isLight ? "border-black" : "border-white/70"} rounded-full w-14`}>
+          <div
+            onClick={toggleTheme}
+            className={`cursor-pointer relative flex justify-between border-2 ${
+              isLight ? "border-black" : "border-white/70"
+            } rounded-full w-14`}
+          >
             <Moon />
             <Sun />
-            <Circle className={`absolute ${isLight ? "bg-white" : "bg-black"} rounded-full transition-all duration-300 ${isLight ? "left-0" : "left-7"}`} />
+            <Circle
+              className={`absolute ${
+                isLight ? "bg-white" : "bg-black"
+              } rounded-full transition-all duration-300 ${
+                isLight ? "left-0" : "left-7"
+              }`}
+            />
           </div>
 
-          {authUser && <Button
-            title="Logout"
-            variant={isLight ? "outline" : "default"}
-            onClick={() => { logout(navigate) }}
-            className="flex items-center gap-1 cursor-pointer hover:text-indigo-400 transition-colors"
-          >
-            <LogOut className="size-4" />
-          </Button>}
+          <Link className="flex items-center gap-1" to="/analyze-image">
+            <img src="/svgs/stars.svg" alt="analysis-icon" />
+            <span className="inline">Live Vision</span>
+          </Link>
+
+          {authUser && (
+            <Button
+              title="Logout"
+              variant={isLight ? "outline" : "default"}
+              onClick={() => {
+                logout(navigate);
+              }}
+              className="flex items-center gap-1 cursor-pointer hover:text-indigo-400 transition-colors"
+            >
+              <LogOut className="size-5 font-extrabold " />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          )}
         </nav>
       </div>
     </header>

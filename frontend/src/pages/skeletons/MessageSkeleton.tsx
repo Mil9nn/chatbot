@@ -2,14 +2,16 @@ const MessageSkeleton = () => {
   const skeletonMessages = Array(6).fill(null);
 
   return (
-    <div className="h-full p-4">
+    <div className="h-full p-4 flex flex-col gap-y-4">
       {skeletonMessages.map((_, idx) => {
         const isSender = idx % 2 !== 0;
 
         return (
           <div
             key={idx}
-            className={`flex items-start gap-3 ${isSender ? "justify-start flex-row-reverse" : ""}`}
+            className={`flex items-start gap-3 ${
+              isSender ? "justify-start flex-row-reverse" : ""
+            }`}
           >
             {/* Avatar */}
             <div className="w-10 h-10 rounded-full bg-zinc-800 animate-pulse" />
