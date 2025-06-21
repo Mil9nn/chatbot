@@ -20,7 +20,7 @@ const ChatContainer = () => {
   }, [messages]);
 
   return (
-    <ScrollArea className="h-[calc(100%-85px)]">
+    <ScrollArea className="h-[calc(100%-72px)]">
       <div className="flex-1 px-4 py-6 space-y-4">
         {messages.map((msg, idx) => {
           const isUser = msg.role === "user";
@@ -42,7 +42,7 @@ const ChatContainer = () => {
                 )}
 
                 <div
-                  className={`rounded-tr-md rounded-tl-[40] rounded-br-xl rounded-bl-sm p-3 text-sm break-words max-w-lg overflow-hidden ${
+                  className={`rounded-md p-3 text-sm break-words max-w-lg overflow-hidden ${
                     isUser
                       ? "bg-rose-500 text-white"
                       : isLight
