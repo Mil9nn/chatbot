@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Moon, Sun, Circle, Image, RefreshCcw } from "lucide-react";
+import { LogOut, Moon, Sun, Circle, RefreshCcw } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "./ui/button";
 import { useThemeStore } from "@/store/useThemeStore";
